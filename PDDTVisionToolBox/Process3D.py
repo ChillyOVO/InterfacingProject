@@ -12,9 +12,11 @@ def getPlaneFitting(Points):
     """
     # print(Points)
     x = Points[0, :]
+    # print(x)
     y = Points[1, :]
     z = Points[2, :]
     num = np.size(x)
+    # print(num)
     A = np.zeros((3, 3))
     A[2, 2] = num
     for i in range(num):
@@ -32,10 +34,15 @@ def getPlaneFitting(Points):
         b[1, 0] = b[1, 0] + y[i] * z[i]
         b[2, 0] = b[2, 0] + z[i]
     # 求解X
-    A_inv = np.linalg.inv(A)
+    # print(b/A)
+    try:
+        A_inv = np.linalg.inv(A)
+    except np.linalg.LinAlgError:
+        print("出现奇异，采用广义逆矩阵求解")
+        A_inv = np.linalg.pinv(A)
     Plane = np.dot(A_inv, b)
     # print('\rPlane Fitting Completed', end='')
-    print('  平面拟合结果为：z = %.6f * x + %.6f * y + %.6f' % (Plane[0, 0], Plane[1, 0], Plane[2, 0]))
+    print('平面拟合结果为：z = %.6f * x + %.6f * y + %.6f' % (Plane[0, 0], Plane[1, 0], Plane[2, 0]))
     return Plane
 
 
